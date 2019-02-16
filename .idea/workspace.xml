@@ -3,6 +3,7 @@
   <component name="ChangeListManager">
     <list default="true" id="7aa967e2-cd0f-4117-9233-cd6f2f786fae" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/IhomeWeb/handler/handler.go" beforeDir="false" afterPath="$PROJECT_DIR$/IhomeWeb/handler/handler.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/IhomeWeb/main.go" beforeDir="false" afterPath="$PROJECT_DIR$/IhomeWeb/main.go" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -58,15 +59,15 @@
       <usages-collector id="statistics.file.extensions.edit">
         <counts>
           <entry key="conf" value="33" />
-          <entry key="go" value="1129" />
+          <entry key="go" value="1130" />
           <entry key="proto" value="138" />
-          <entry key="txt" value="68" />
+          <entry key="txt" value="90" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.edit">
         <counts>
-          <entry key="Go" value="1129" />
-          <entry key="PLAIN_TEXT" value="160" />
+          <entry key="Go" value="1130" />
+          <entry key="PLAIN_TEXT" value="182" />
           <entry key="PROTO" value="79" />
         </counts>
       </usages-collector>
@@ -75,7 +76,7 @@
           <entry key="Dockerfile" value="2" />
           <entry key="Makefile" value="1" />
           <entry key="conf" value="1" />
-          <entry key="go" value="15" />
+          <entry key="go" value="16" />
           <entry key="html" value="1" />
           <entry key="js" value="1" />
           <entry key="md" value="1" />
@@ -85,7 +86,7 @@
       </usages-collector>
       <usages-collector id="statistics.file.types.open">
         <counts>
-          <entry key="Go" value="15" />
+          <entry key="Go" value="16" />
           <entry key="HTML" value="1" />
           <entry key="JavaScript" value="1" />
           <entry key="PLAIN_TEXT" value="6" />
@@ -105,8 +106,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/IhomeWeb/handler/handler.go">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="240">
-              <caret line="11" lean-forward="true" selection-start-line="11" selection-end-line="11" />
+            <state relative-caret-position="270">
+              <caret line="15" column="24" lean-forward="true" selection-start-line="15" selection-start-column="24" selection-end-line="15" selection-end-column="24" />
               <folding>
                 <element signature="e#17#310#0" expanded="true" />
               </folding>
@@ -117,8 +118,17 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/GetArea/main.go">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="90">
-              <caret line="20" column="18" lean-forward="true" selection-start-line="20" selection-start-column="18" selection-end-line="20" selection-end-column="18" />
+            <state relative-caret-position="270">
+              <caret line="26" column="15" lean-forward="true" selection-start-line="26" selection-start-column="15" selection-end-line="26" selection-end-column="15" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/IhomeWeb/main.go">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="270">
+              <caret line="26" lean-forward="true" selection-start-line="26" selection-end-line="26" />
             </state>
           </provider>
         </entry>
@@ -144,9 +154,9 @@
         <option value="$PROJECT_DIR$/IhomeWeb/utils/config.go" />
         <option value="$PROJECT_DIR$/IhomeWeb/conf/data.sql" />
         <option value="$PROJECT_DIR$/GetArea/proto/example/example.proto" />
-        <option value="$PROJECT_DIR$/IhomeWeb/main.go" />
         <option value="$PROJECT_DIR$/GetArea/main.go" />
         <option value="$PROJECT_DIR$/GetArea/handler/example.go" />
+        <option value="$PROJECT_DIR$/IhomeWeb/main.go" />
         <option value="$PROJECT_DIR$/IhomeWeb/handler/handler.go" />
       </list>
     </option>
@@ -212,6 +222,11 @@
               <item name="GetArea" type="462c0819:PsiDirectoryNode" />
               <item name="proto" type="462c0819:PsiDirectoryNode" />
               <item name="example" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="gomicro" type="b2602c69:ProjectViewProjectNode" />
+              <item name="gomicro" type="462c0819:PsiDirectoryNode" />
+              <item name="IhomeWeb" type="462c0819:PsiDirectoryNode" />
             </path>
           </expand>
           <select />
@@ -321,7 +336,8 @@
   <component name="VcsManagerConfiguration">
     <MESSAGE value="1.基本框架搭建&#10;2.数据库初始化&#10;3.页面初始化" />
     <MESSAGE value="1.定义获取地区信息服务的proto" />
-    <option name="LAST_COMMIT_MESSAGE" value="1.定义获取地区信息服务的proto" />
+    <MESSAGE value="1.删除handler中Example函数" />
+    <option name="LAST_COMMIT_MESSAGE" value="1.删除handler中Example函数" />
   </component>
   <component name="editorHistoryManager">
     <entry file="file://$PROJECT_DIR$/IhomeWeb/utils/error.go">
@@ -391,13 +407,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/IhomeWeb/main.go">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="210">
-          <caret line="15" column="33" lean-forward="true" selection-start-line="15" selection-start-column="33" selection-end-line="15" selection-end-column="33" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/GetArea/proto/example/example.proto">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="180">
@@ -426,15 +435,22 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/GetArea/main.go">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="90">
-          <caret line="20" column="18" lean-forward="true" selection-start-line="20" selection-start-column="18" selection-end-line="20" selection-end-column="18" />
+        <state relative-caret-position="270">
+          <caret line="26" column="15" lean-forward="true" selection-start-line="26" selection-start-column="15" selection-end-line="26" selection-end-column="15" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/IhomeWeb/main.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="270">
+          <caret line="26" lean-forward="true" selection-start-line="26" selection-end-line="26" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/IhomeWeb/handler/handler.go">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="240">
-          <caret line="11" lean-forward="true" selection-start-line="11" selection-end-line="11" />
+        <state relative-caret-position="270">
+          <caret line="15" column="24" lean-forward="true" selection-start-line="15" selection-start-column="24" selection-end-line="15" selection-end-column="24" />
           <folding>
             <element signature="e#17#310#0" expanded="true" />
           </folding>
