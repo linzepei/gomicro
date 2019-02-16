@@ -73,6 +73,9 @@ func GetArea(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 		"data":   area_list,
 	}
 
+	//设置返回的数据格式
+	w.Header().Set("Content-Type", "application/json")
+
 	// encode and write the response as json
 	if err := json.NewEncoder(w).Encode(response); err != nil {
 		http.Error(w, err.Error(), 500)
