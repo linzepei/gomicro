@@ -22,6 +22,9 @@ func main() {
 	rou := httprouter.New()
 	rou.NotFound = http.FileServer(http.Dir("html"))
 
+	//获取地区请求
+	rou.GET("/api/areas",handler.ExampleCall)
+
 	// initialise service
 	if err := service.Init(); err != nil {
 		log.Fatal(err)
