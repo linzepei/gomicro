@@ -3,7 +3,8 @@ syntax = "proto3";
 package go.micro.srv.GetArea;
 
 service Example {
-	rpc Call(Request) returns (Response) {}
+	//获取地区信息的服务
+	rpc GetArea(Request) returns (Response) {}
 	rpc Stream(StreamingRequest) returns (stream StreamingResponse) {}
 	rpc PingPong(stream Ping) returns (stream Pong) {}
 }
@@ -13,11 +14,21 @@ message Message {
 }
 
 message Request {
-	string name = 1;
 }
 
 message Response {
-	string msg = 1;
+    //错误码
+	string Error = 1;
+	//错误信息
+	string Errmsg = 2;
+	message Areas{
+		//地区id
+	    int32 Aid = 1;
+		//地区名称
+		string Aname = 2;
+	}
+	//返回的数据切片
+	repeated Areas Data = 3;
 }
 
 message StreamingRequest {
