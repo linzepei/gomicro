@@ -2,10 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="7aa967e2-cd0f-4117-9233-cd6f2f786fae" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/GetArea/handler/example.go" beforeDir="false" afterPath="$PROJECT_DIR$/GetArea/handler/example.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/GetArea/main.go" beforeDir="false" afterPath="$PROJECT_DIR$/GetArea/main.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/IhomeWeb/handler/handler.go" beforeDir="false" afterPath="$PROJECT_DIR$/IhomeWeb/handler/handler.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/IhomeWeb/main.go" beforeDir="false" afterPath="$PROJECT_DIR$/IhomeWeb/main.go" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -61,14 +58,14 @@
       <usages-collector id="statistics.file.extensions.edit">
         <counts>
           <entry key="conf" value="33" />
-          <entry key="go" value="1127" />
+          <entry key="go" value="1129" />
           <entry key="proto" value="138" />
           <entry key="txt" value="68" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.edit">
         <counts>
-          <entry key="Go" value="1127" />
+          <entry key="Go" value="1129" />
           <entry key="PLAIN_TEXT" value="160" />
           <entry key="PROTO" value="79" />
         </counts>
@@ -108,10 +105,10 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/IhomeWeb/handler/handler.go">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="270">
-              <caret line="9" column="28" selection-start-line="9" selection-start-column="28" selection-end-line="9" selection-end-column="28" />
+            <state relative-caret-position="240">
+              <caret line="11" lean-forward="true" selection-start-line="11" selection-end-line="11" />
               <folding>
-                <element signature="n#!!block;n#ExampleCall#0" />
+                <element signature="e#17#310#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -121,7 +118,7 @@
         <entry file="file://$PROJECT_DIR$/GetArea/main.go">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="90">
-              <caret line="11" selection-start-line="11" selection-end-line="11" />
+              <caret line="20" column="18" lean-forward="true" selection-start-line="20" selection-start-column="18" selection-end-line="20" selection-end-column="18" />
             </state>
           </provider>
         </entry>
@@ -148,9 +145,9 @@
         <option value="$PROJECT_DIR$/IhomeWeb/conf/data.sql" />
         <option value="$PROJECT_DIR$/GetArea/proto/example/example.proto" />
         <option value="$PROJECT_DIR$/IhomeWeb/main.go" />
-        <option value="$PROJECT_DIR$/IhomeWeb/handler/handler.go" />
         <option value="$PROJECT_DIR$/GetArea/main.go" />
         <option value="$PROJECT_DIR$/GetArea/handler/example.go" />
+        <option value="$PROJECT_DIR$/IhomeWeb/handler/handler.go" />
       </list>
     </option>
   </component>
@@ -209,6 +206,13 @@
               <item name="GetArea" type="462c0819:PsiDirectoryNode" />
               <item name="proto" type="462c0819:PsiDirectoryNode" />
             </path>
+            <path>
+              <item name="gomicro" type="b2602c69:ProjectViewProjectNode" />
+              <item name="gomicro" type="462c0819:PsiDirectoryNode" />
+              <item name="GetArea" type="462c0819:PsiDirectoryNode" />
+              <item name="proto" type="462c0819:PsiDirectoryNode" />
+              <item name="example" type="462c0819:PsiDirectoryNode" />
+            </path>
           </expand>
           <select />
         </subPane>
@@ -262,10 +266,12 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="-7" y="-7" width="1550" height="838" extended-state="6" />
+    <editor active="true" />
     <layout>
       <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.2660858" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Favorites" order="2" side_tool="true" />
+      <window_info anchor="bottom" id="File Transfer" sideWeight="0.49932975" weight="0.3286119" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" />
       <window_info anchor="bottom" id="Run" order="2" weight="0.3286119" />
@@ -275,8 +281,8 @@
       <window_info anchor="bottom" id="TODO" order="6" />
       <window_info anchor="bottom" id="Database Changes" order="7" show_stripe_button="false" />
       <window_info anchor="bottom" id="Version Control" order="8" show_stripe_button="false" />
-      <window_info anchor="bottom" id="Terminal" order="9" visible="true" weight="0.3753541" />
-      <window_info anchor="bottom" id="Event Log" order="10" side_tool="true" />
+      <window_info anchor="bottom" id="Terminal" order="9" visible="true" weight="0.32152975" />
+      <window_info anchor="bottom" id="Event Log" order="10" sideWeight="0.50067025" side_tool="true" weight="0.3286119" />
       <window_info anchor="bottom" id="Docker" order="11" show_stripe_button="false" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
@@ -418,20 +424,20 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/IhomeWeb/handler/handler.go">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="270">
-          <caret line="9" column="28" selection-start-line="9" selection-start-column="28" selection-end-line="9" selection-end-column="28" />
-          <folding>
-            <element signature="n#!!block;n#ExampleCall#0" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/GetArea/main.go">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="90">
-          <caret line="11" selection-start-line="11" selection-end-line="11" />
+          <caret line="20" column="18" lean-forward="true" selection-start-line="20" selection-start-column="18" selection-end-line="20" selection-end-column="18" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/IhomeWeb/handler/handler.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="240">
+          <caret line="11" lean-forward="true" selection-start-line="11" selection-end-line="11" />
+          <folding>
+            <element signature="e#17#310#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
