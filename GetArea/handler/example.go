@@ -10,10 +10,10 @@ import (
 	"gomicro/IhomeWeb/utils"
 	"time"
 
-	"github.com/micro/go-log"
-
-	//	"github.com/astaxie/beego/cache"
+	_ "github.com/astaxie/beego/cache/redis"
+	_ "github.com/garyburd/redigo/redis"
 	_ "github.com/gomodule/redigo/redis"
+	"github.com/micro/go-log"
 	example "gomicro/GetArea/proto/example"
 )
 
