@@ -2,13 +2,18 @@ package handler
 
 import (
 	"context"
+	"encoding/json"
 	"github.com/astaxie/beego"
+	"github.com/astaxie/beego/cache"
 	"github.com/astaxie/beego/orm"
 	"gomicro/IhomeWeb/models"
 	"gomicro/IhomeWeb/utils"
+	"time"
 
 	"github.com/micro/go-log"
 
+	//	"github.com/astaxie/beego/cache"
+	_ "github.com/gomodule/redigo/redis"
 	example "gomicro/GetArea/proto/example"
 )
 
@@ -26,7 +31,43 @@ func (e *Example) GetArea(ctx context.Context, req *example.Request, rsp *exampl
 	2.没有数据就从mysql中查找数据
 	3.将查找到的数据存到缓存中
 	4.将查找到的数据发送给前端
-	 */
+	*/
+	//准备连接redis信息
+	redis_conf := map[string]string{
+		"key":      utils.G_server_name,
+		"conn":     utils.G_server_addr + ":" + utils.G_server_port,
+		"dbNum":    utils.G_redis_dbnum,
+		"password": utils.G_redis_password,
+	}
+	beego.Info(redis_conf)
+	//将map进行转换成为json
+	redis_conf_json, _ := json.Marshal(redis_conf)
+
+	//创建redis句柄
+	bm, err := cache.NewCache("redis", string(redis_conf_json))
+	if err != nil {
+		beego.Info("redis连接失败", err)
+		rsp.Error = utils.RECODE_DBERR
+		rsp.Errmsg = utils.RecodeText(rsp.Error)
+	}
+	//获取数据 定义一个key 就是用来作area查询的 area_info
+	area_value := bm.Get("area_info")
+	if area_value != nil {
+		//如果有数据发送给前端
+		beego.Info("获取到地域信息缓存")
+		area_map := []map[string]interface{}{}
+		//将获取到的数据进行json解码
+		json.Unmarshal(area_value.([]byte), &area_map)
+		//beego.Info("得到从缓存中提取到的area数据", area_map)
+		for _, value := range area_map {
+			//beego.Info(key, value)
+			tmp := example.Response_Areas{Aid: int32(value["aid"].(float64)), Aname: value["aname"].(string)}
+			rsp.Data = append(rsp.Data, &tmp)
+		}
+		//已经将数据发送给了前端，后面就不需要执行了
+		return nil
+	}
+
 	//beego操作数据库的orm方法
 	//创建orm句柄
 	o := orm.NewOrm()
@@ -47,9 +88,19 @@ func (e *Example) GetArea(ctx context.Context, req *example.Request, rsp *exampl
 		rsp.Errmsg = utils.RecodeText(rsp.Error)
 		return nil
 	}
+	//将查询到的数据写入缓存
+	//需要将获取到的数据转换为json
+	area_json, _ := json.Marshal(area)
+	//操作redis将数据带入
+	err = bm.Put("area_info", area_json, time.Second*3600)
+	if err != nil {
+		beego.Info("数据缓存失败", err)
+		rsp.Error = utils.RECODE_DBERR
+		rsp.Errmsg = utils.RecodeText(rsp.Error)
+	}
 	//将查询到的数据按照proto的格式发送给web服务
-	for key, value := range area {
-		beego.Info(key, value)
+	for _, value := range area {
+		//beego.Info(key, value)
 		tmp := example.Response_Areas{Aid: int32(value.Id), Aname: value.Name}
 		rsp.Data = append(rsp.Data, &tmp)
 	}
