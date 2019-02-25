@@ -34,10 +34,10 @@ func (e *Example) GetArea(ctx context.Context, req *example.Request, rsp *exampl
 	*/
 	//准备连接redis信息
 	redis_conf := map[string]string{
-		"key":      utils.G_server_name,
-		"conn":     utils.G_redis_addr + ":" + utils.G_redis_port,
-		"dbNum":    utils.G_redis_dbnum,
-		"password": utils.G_redis_password,
+		"key":   utils.G_server_name,
+		"conn":  utils.G_redis_addr + ":" + utils.G_redis_port,
+		"dbNum": utils.G_redis_dbnum,
+		//"password": utils.G_redis_password,
 	}
 	beego.Info(redis_conf)
 	//将map进行转换成为json
