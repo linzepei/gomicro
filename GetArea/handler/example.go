@@ -49,7 +49,6 @@ func (e *Example) GetArea(ctx context.Context, req *example.Request, rsp *exampl
 		beego.Info("redis连接失败", err)
 		rsp.Error = utils.RECODE_DBERR
 		rsp.Errmsg = utils.RecodeText(rsp.Error)
-		return nil
 	}
 	//获取数据 定义一个key 就是用来作area查询的 area_info
 	area_value := bm.Get("area_info")
@@ -98,7 +97,6 @@ func (e *Example) GetArea(ctx context.Context, req *example.Request, rsp *exampl
 		beego.Info("数据缓存失败", err)
 		rsp.Error = utils.RECODE_DBERR
 		rsp.Errmsg = utils.RecodeText(rsp.Error)
-		return nil
 	}
 	//将查询到的数据按照proto的格式发送给web服务
 	for _, value := range area {
