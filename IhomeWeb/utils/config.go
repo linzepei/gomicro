@@ -2,7 +2,6 @@ package utils
 
 import (
 	"github.com/astaxie/beego"
-	//使用了beego框架的配置文件读取模块
 	"github.com/astaxie/beego/config"
 )
 
@@ -25,6 +24,7 @@ func InitConfig() {
 	//从配置文件读取配置信息
 	//如果项目迁移需要进行修改
 	appconf, err := config.NewConfig("ini", "/root/mygo/src/gomicro/IhomeWeb/conf/app.conf")
+	//appconf, err := config.NewConfig("ini", "D:/Projects/mygo/src/gomicro/IhomeWeb/conf/app.conf")
 	if err != nil {
 		beego.Debug(err)
 		return

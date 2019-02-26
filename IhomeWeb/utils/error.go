@@ -13,6 +13,7 @@ const (
 	RECODE_ROLEERR    = "4105"
 	RECODE_PWDERR     = "4106"
 	RECODE_SMSERR     = "4017"
+	RECODE_MOBILEERR  = "4018"
 	RECODE_REQERR     = "4201"
 	RECODE_IPERR      = "4202"
 	RECODE_THIRDERR   = "4301"
@@ -40,6 +41,7 @@ var recodeText = map[string]string{
 	RECODE_SERVERERR:  "内部错误",
 	RECODE_UNKNOWERR:  "未知错误",
 	RECODE_SMSERR:     "短信失败",
+	RECODE_MOBILEERR:  "手机号错误",
 }
 
 func RecodeText(code string) string {
