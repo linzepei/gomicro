@@ -4,7 +4,7 @@ import (
 	"context"
 	"github.com/micro/go-log"
 
-	example "sss/GetSession/proto/example"
+	example "gomicro/GetSession/proto/example"
 )
 
 type Example struct{}
