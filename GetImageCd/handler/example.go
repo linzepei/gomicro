@@ -50,8 +50,9 @@ func (e *Example) GetImageCd(ctx context.Context, req *example.Request, rsp *exa
 	redis_conf := map[string]string{
 		"key": utils.G_server_name,
 		//127.0.0.1:6379
-		"conn":  utils.G_redis_addr + ":" + utils.G_redis_port,
-		"dbNum": utils.G_redis_dbnum,
+		"conn":     utils.G_redis_addr + ":" + utils.G_redis_port,
+		"dbNum":    utils.G_redis_dbnum,
+		"password": "sher",
 	}
 	beego.Info(redis_conf)
 

@@ -16,7 +16,7 @@ func main() {
 	service := web.NewService(
 		web.Name("go.micro.web.IhomeWeb"),
 		web.Version("latest"),
-		web.Address(":10086"),
+		web.Address(":8888"),
 	)
 
 	// initialise service
