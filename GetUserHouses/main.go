@@ -3,16 +3,16 @@ package main
 import (
 	"github.com/micro/go-log"
 	"github.com/micro/go-micro"
-	"gomicro/GetUserInfo/handler"
+	"gomicro/GetUserHouses/handler"
 
 	"github.com/micro/go-grpc"
-	example "gomicro/GetUserInfo/proto/example"
+	example "gomicro/GetUserHouses/proto/example"
 )
 
 func main() {
 	// New Service
 	service := grpc.NewService(
-		micro.Name("go.micro.srv.GetUserInfo"),
+		micro.Name("go.micro.srv.GetUserHouses"),
 		micro.Version("latest"),
 	)
 

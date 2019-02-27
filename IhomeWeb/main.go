@@ -16,7 +16,7 @@ func main() {
 	service := web.NewService(
 		web.Name("go.micro.web.IhomeWeb"),
 		web.Version("latest"),
-		web.Address(":8888"),
+		web.Address(":10086"),
 	)
 
 	// initialise service
@@ -43,6 +43,18 @@ func main() {
 	rou.POST("/api/v1.0/sessions", handler.PostLogin)
 	//退出登陆
 	rou.DELETE("/api/v1.0/session", handler.DeleteSession)
+	//获取用户信息
+	rou.GET("/api/v1.0/user", handler.GetUserInfo)
+	//上传头像
+	rou.POST("/api/v1.0/user/avatar", handler.PostAvatar)
+	//用户认证检查
+	rou.GET("/api/v1.0/user/auth", handler.GetUserAuth)
+	//实名认证
+	rou.POST("/api/v1.0/user/auth", handler.PostUserAuth)
+	//获取用户房源信息
+	rou.GET("/api/v1.0/user/houses", handler.GetUserHouses)
+	//发布房源信息
+	rou.POST("/api/v1.0/houses", handler.PostHouses)
 
 	//获取首页轮播图
 	rou.GET("/api/v1.0/house/index", handler.GetIndex)

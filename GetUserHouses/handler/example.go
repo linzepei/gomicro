@@ -11,7 +11,7 @@ import (
 	"github.com/garyburd/redigo/redis"
 	_ "github.com/garyburd/redigo/redis"
 	_ "github.com/gomodule/redigo/redis"
-	example "gomicro/GetUserInfo/proto/example"
+	example "gomicro/GetUserHouses/proto/example"
 	"gomicro/IhomeWeb/models"
 	"gomicro/IhomeWeb/utils"
 	"strconv"
@@ -20,16 +20,15 @@ import (
 type Example struct{}
 
 // Call is a single request handler called via client.Call or the generated client code
-func (e *Example) GetUserInfo(ctx context.Context, req *example.Request, rsp *example.Response) error {
-	beego.Info("获取用户信息 GetUserInfo /api/v1.0/user ")
+func (e *Example) GetUserHouses(ctx context.Context, req *example.Request, rsp *example.Response) error {
+	beego.Info("获取用户已发部房源 GetUserHouses api/v1.0/user/houses")
 
-	/*初始化错误码*/
+	/*初始化 返回值*/
 	rsp.Errno = utils.RECODE_OK
 	rsp.Errmsg = utils.RecodeText(rsp.Errno)
 
 	/*获取sessionid*/
 	sessionid := req.Sessionid
-
 	/*连接redis*/
 	//配置缓存参数
 	redis_conf := map[string]string{
@@ -49,40 +48,36 @@ func (e *Example) GetUserInfo(ctx context.Context, req *example.Request, rsp *ex
 		beego.Info("redis连接失败", err)
 		rsp.Errno = utils.RECODE_DBERR
 		rsp.Errmsg = utils.RecodeText(rsp.Errno)
+		return nil
 	}
 
 	/*拼接key*/
-	sessionuserid := sessionid + "user_id"
+	sessionid_user_id := sessionid + "user_id"
+	/*查询对应的user_id*/
+	user_id := bm.Get(sessionid_user_id)
+	//转换格式
+	user_id_str, _ := redis.String(user_id, nil)
+	id, _ := strconv.Atoi(user_id_str)
 
-	/*通过key获取到user_id*/
-	user_id := bm.Get(sessionuserid)
-	beego.Info(user_id)
-	//beego.Info(reflect.TypeOf(user_id),user_id)
-	userid_str, _ := redis.String(user_id, nil)
-	beego.Info(userid_str)
-	//beego.Info(reflect.TypeOf(userid_str),userid_str)
-	id, _ := strconv.Atoi(userid_str)
-	beego.Info(id)
-
-	/*通过user_id获取到用户表信息*/
-	//创建1个user对象
-	user := models.User{Id: id}
+	/*查询数据库*/
 	//创建orm句柄
 	o := orm.NewOrm()
-	err = o.Read(&user)
+	qs := o.QueryTable("house")
+
+	houses_list := []models.House{}
+	/*获得当前用户房屋信息*/
+	_, err = qs.Filter("user_id", id).All(&houses_list)
 	if err != nil {
-		beego.Info("数据获取失败", err)
+		beego.Info("查询房屋数据失败", err)
 		rsp.Errno = utils.RECODE_DBERR
 		rsp.Errmsg = utils.RecodeText(rsp.Errno)
+		return nil
 	}
 
-	/*将信息返回*/
-	rsp.UserId = strconv.Itoa(user.Id)
-	rsp.Name = user.Name
-	rsp.RealName = user.Real_name
-	rsp.IdCard = user.Id_card
-	rsp.Mobile = user.Mobile
-	rsp.AvatarUrl = user.Avatar_url
+	/*json编码成为二进制返回*/
+	house, _ := json.Marshal(houses_list)
+	//返回二进制数据
+	rsp.Mix = house
 
 	return nil
 }

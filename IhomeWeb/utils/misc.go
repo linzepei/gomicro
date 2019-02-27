@@ -3,6 +3,7 @@ package utils
 import (
 	"crypto/md5"
 	"encoding/hex"
+	"fmt"
 	"github.com/astaxie/beego"
 	"github.com/weilaihui/fdfs_client"
 )
@@ -55,31 +56,26 @@ func UploadByFilename(filename string) (GroupName, RemoteFileId string, err erro
 
 }
 
-//功能函数 操作fdfs上传二进制文件
-func UploadByBuffer(filebuffer []byte, fileExtName string) (GroupName, RemoteFileId string, err error) {
-
-	//通过配置文件创建fdfs操作句柄
-	fdfsClient, thiserr := fdfs_client.NewFdfsClient("/root/mygo/src/gomicro/IhomeWeb/conf/client.conf")
-	if thiserr != nil {
-		beego.Info("UploadByBuffer( ) fdfs_client.NewFdfsClient  err", err)
-		GroupName = ""
-		RemoteFileId = ""
-		err = thiserr
+//上传二进制文件到fdfs中的操作
+func UploadByBuffer(filebuffer []byte, fileExt string) (fileid string, err error) {
+	fd_cilent, err := fdfs_client.NewFdfsClient("/home/itcast/go/src/sss/IhomeWeb/conf/client.conf")
+	if err != nil {
+		fmt.Println("创建句柄失败", err)
+		fileid = ""
 		return
 	}
 
-	//通过句柄上传二进制的文件
-	uploadResponse, thiserr := fdfsClient.UploadByBuffer(filebuffer, fileExtName)
-	if thiserr != nil {
-		beego.Info("UploadByBuffer( ) fdfs_client.UploadByBuffer  err", err)
-		GroupName = ""
-		RemoteFileId = ""
-		err = thiserr
+	fd_rsq, err := fd_cilent.UploadByBuffer(filebuffer, fileExt)
+	if err != nil {
+		fmt.Println("上传失败", err)
+		fileid = ""
 		return
 	}
-	beego.Info(uploadResponse.GroupName)
-	beego.Info(uploadResponse.RemoteFileId)
-	//回传
-	return uploadResponse.GroupName, uploadResponse.RemoteFileId, nil
 
+	fmt.Println(fd_rsq.GroupName)
+	fmt.Println(fd_rsq.RemoteFileId)
+
+	fileid = fd_rsq.RemoteFileId
+
+	return fileid, nil
 }
