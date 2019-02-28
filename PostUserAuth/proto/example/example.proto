@@ -5,6 +5,10 @@ package go.micro.srv.PostUserAuth;
 service Example {
     rpc PostUserAuth (Request) returns (Response) {
     }
+    rpc Stream (StreamingRequest) returns (stream StreamingResponse) {
+    }
+    rpc PingPong (stream Ping) returns (stream Pong) {
+    }
 }
 
 message Message {
@@ -13,9 +17,7 @@ message Message {
 
 message Request {
     string Sessionid = 1;
-    //real_name: "熊猫",
     string Real_name = 2;
-    //id_card: "21011223344556677"
     string Id_card = 3;
 }
 

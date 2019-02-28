@@ -1,12 +1,11 @@
 package main
 
 import (
+	"github.com/micro/go-grpc"
 	"github.com/micro/go-log"
 	"github.com/micro/go-micro"
-	"gomicro/PostHouses/handler"
-
-	"github.com/micro/go-grpc"
-	example "gomicro/PostHouses/proto/example"
+	"go-1/PostHouses/handler"
+	example "go-1/PostHouses/proto/example"
 )
 
 func main() {

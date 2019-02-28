@@ -5,7 +5,7 @@ This is the PostAvatar service
 Generated with
 
 ```
-micro new sss/PostAvatar --namespace=go.micro --type=srv
+micro new go-1/PostAvatar --namespace=go.micro --type=srv
 ```
 
 ## Getting Started

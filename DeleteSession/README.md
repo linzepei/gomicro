@@ -5,7 +5,7 @@ This is the DeleteSession service
 Generated with
 
 ```
-micro new sss/DeleteSession --namespace=go.micro --type=srv
+micro new go-1/DeleteSession --namespace=go.micro --type=srv
 ```
 
 ## Getting Started

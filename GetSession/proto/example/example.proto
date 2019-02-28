@@ -13,14 +13,16 @@ message Message {
 }
 
 message Request {
-	string Sessionid = 1;
+
+    string Sessionid = 1;
+
 }
 
 message Response {
+
 	string Errno = 1;
-	string Errmsg = 2;
-	//返回用户名
-	string User_name = 3;
+    string Errmsg = 2;
+    string Data = 3;
 }
 
 message StreamingRequest {

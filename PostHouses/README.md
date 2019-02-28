@@ -5,7 +5,7 @@ This is the PostHouses service
 Generated with
 
 ```
-micro new sss/PostHouses --namespace=go.micro --type=srv
+micro new go-1/PostHouses --namespace=go.micro --type=srv
 ```
 
 ## Getting Started

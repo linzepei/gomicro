@@ -3,11 +3,11 @@ package main
 import (
 	"github.com/micro/go-log"
 	"github.com/micro/go-micro"
-	"gomicro/GetSession/handler"
-	"gomicro/GetSession/subscriber"
+	"go-1/GetSession/handler"
+	"go-1/GetSession/subscriber"
 
 	"github.com/micro/go-grpc"
-	example "gomicro/GetSession/proto/example"
+	example "go-1/GetSession/proto/example"
 )
 
 func main() {

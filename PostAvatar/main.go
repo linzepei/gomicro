@@ -1,11 +1,13 @@
 package main
 
 import (
-	"github.com/micro/go-grpc"
 	"github.com/micro/go-log"
 	"github.com/micro/go-micro"
-	"gomicro/PostAvatar/handler"
-	example "gomicro/PostAvatar/proto/example"
+	"go-1/PostAvatar/handler"
+	"go-1/PostAvatar/subscriber"
+
+	"github.com/micro/go-grpc"
+	example "go-1/PostAvatar/proto/example"
 )
 
 func main() {
@@ -20,6 +22,12 @@ func main() {
 
 	// Register Handler
 	example.RegisterExampleHandler(service.Server(), new(handler.Example))
+
+	// Register Struct as Subscriber
+	micro.RegisterSubscriber("go.micro.srv.PostAvatar", service.Server(), new(subscriber.Example))
+
+	// Register Function as Subscriber
+	micro.RegisterSubscriber("go.micro.srv.PostAvatar", service.Server(), subscriber.Handler)
 
 	// Run service
 	if err := service.Run(); err != nil {

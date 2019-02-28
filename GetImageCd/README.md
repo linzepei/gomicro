@@ -5,7 +5,7 @@ This is the GetImageCd service
 Generated with
 
 ```
-micro new gomicro/GetImageCd --namespace=go.micro --type=srv
+micro new go-1/GetImageCd --namespace=go.micro --type=srv
 ```
 
 ## Getting Started
@@ -22,9 +22,7 @@ micro new gomicro/GetImageCd --namespace=go.micro --type=srv
 
 ## Dependencies
 
-Micro services depend on service discovery. The default is multicast DNS, a zeroconf system.
-
-In the event you need a resilient multi-host setup we recommend consul.
+Micro services depend on service discovery. The default is consul.
 
 ```
 # install consul

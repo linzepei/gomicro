@@ -5,7 +5,10 @@ package go.micro.srv.PostAvatar;
 service Example {
     rpc PostAvatar (Request) returns (Response) {
     }
-
+    rpc Stream (StreamingRequest) returns (stream StreamingResponse) {
+    }
+    rpc PingPong (stream Ping) returns (stream Pong) {
+    }
 }
 
 message Message {
@@ -13,19 +16,22 @@ message Message {
 }
 
 message Request {
-    //二进制图片流
+    //二进制图片
     bytes Avatar = 1;
+    //sessionid
+    string Sessionid = 2;
     //文件大小
-    int64 Filesize = 2;
-    //文件后缀
-    string Fileext = 3;
-    string SessionId = 4;
+    int64 filesize = 3;
+    //文件名字
+    string filename = 4;
 }
 
 message Response {
+    //错误码
     string Errno = 1;
+    //错误信息
     string Errmsg = 2;
-    //不完整的头像地址
+    //回传的url
     string Avatar_url = 3;
 }
 

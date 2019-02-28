@@ -13,38 +13,28 @@ message Message {
 }
 
 message Request {
-	string Uuid = 1;
+    string uuid = 1;
 }
 
 message Response {
-	string Error = 1;
-	string Errmsg = 2;
+    //错误码
+    string Errno = 1;
+    //错误消息
+    string Errmsg = 2;
+    //图片结构信息
+    bytes Pix = 3;
 
-	//Pix []uint8
-	//图片的结构元素
-    bytes  Pix = 3 ;
-    //Stride int
-    //图片的跨度
-    int64  Stride =4 ;
+    //图片跨步
+    int64 Stride = 4;
 
-    //type Point struct {
-    //	X, Y int
-    //}
-    //坐标
-    //用来代替Point
-    message Point{
-        int64 X =1;
-        int64 Y =2;
+    message Point {
+        int64 X = 1;
+        int64 Y = 2;
     }
 
-    //Rect Rectangle
-    //type Rectangle struct {
-    //	Min, Max Point
-    //}
-    Point Min = 5 ;
-    Point Max = 6 ;
-
-
+    // Min, Max Point
+    Point Min = 5;
+    Point Max = 6;
 }
 
 message StreamingRequest {

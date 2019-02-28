@@ -47,7 +47,6 @@ var _ server.Option
 // Client API for Example service
 
 type ExampleService interface {
-	// 获取地区信息的服务
 	GetArea(ctx context.Context, in *Request, opts ...client.CallOption) (*Response, error)
 	Stream(ctx context.Context, in *StreamingRequest, opts ...client.CallOption) (Example_StreamService, error)
 	PingPong(ctx context.Context, opts ...client.CallOption) (Example_PingPongService, error)
@@ -174,7 +173,6 @@ func (x *exampleServicePingPong) Recv() (*Pong, error) {
 // Server API for Example service
 
 type ExampleHandler interface {
-	// 获取地区信息的服务
 	GetArea(context.Context, *Request, *Response) error
 	Stream(context.Context, *StreamingRequest, Example_StreamStream) error
 	PingPong(context.Context, Example_PingPongStream) error

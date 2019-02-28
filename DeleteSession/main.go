@@ -3,10 +3,12 @@ package main
 import (
 	"github.com/micro/go-log"
 	"github.com/micro/go-micro"
-	"gomicro/DeleteSession/handler"
+	"go-1/DeleteSession/handler"
+	"go-1/DeleteSession/subscriber"
+
+	example "go-1/DeleteSession/proto/example"
 
 	"github.com/micro/go-grpc"
-	example "gomicro/DeleteSession/proto/example"
 )
 
 func main() {
@@ -21,6 +23,12 @@ func main() {
 
 	// Register Handler
 	example.RegisterExampleHandler(service.Server(), new(handler.Example))
+
+	// Register Struct as Subscriber
+	micro.RegisterSubscriber("go.micro.srv.DeleteSession", service.Server(), new(subscriber.Example))
+
+	// Register Function as Subscriber
+	micro.RegisterSubscriber("go.micro.srv.DeleteSession", service.Server(), subscriber.Handler)
 
 	// Run service
 	if err := service.Run(); err != nil {

@@ -10,10 +10,9 @@ import (
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/cache"
 	_ "github.com/astaxie/beego/cache/redis"
-	_ "github.com/garyburd/redigo/redis"
 	_ "github.com/gomodule/redigo/redis"
-	example "gomicro/GetImageCd/proto/example"
-	"gomicro/IhomeWeb/utils"
+	example "go-1/GetImageCd/proto/example"
+	"go-1/homeweb/utils"
 	"image/color"
 	"time"
 )
@@ -22,64 +21,63 @@ type Example struct{}
 
 // Call is a single request handler called via client.Call or the generated client code
 func (e *Example) GetImageCd(ctx context.Context, req *example.Request, rsp *example.Response) error {
-	beego.Info("获取验证码图片 GetImageCd /api/v1.0/imagecode/:uuid")
 
-	/*生成验证码图片*/
-	//创建图片句柄
+	beego.Info("---------------- GET  /api/v1.0/imagecode/:uuid GetImage() ------------------")
+
+	//创建1个句柄
 	cap := captcha.New()
-
-	//设置字体
+	//通过句柄调用 字体文件
 	if err := cap.SetFont("comic.ttf"); err != nil {
+		beego.Info("没有字体文件")
 		panic(err.Error())
 	}
-
-	//设置图片大小
+	//设置图片的大小
 	cap.SetSize(91, 41)
-	//设置干扰强度
-	cap.SetDisturbance(captcha.NORMAL)
-	//设置前景色
+	// 设置干扰强度
+	cap.SetDisturbance(captcha.MEDIUM)
+	// 设置前景色 可以多个 随机替换文字颜色 默认黑色
+	//SetFrontColor(colors ...color.Color)  这两个颜色设置的函数属于不定参函数
 	cap.SetFrontColor(color.RGBA{255, 255, 255, 255})
-	//设置背景色
+	// 设置背景色 可以多个 随机替换背景色 默认白色
 	cap.SetBkgColor(color.RGBA{255, 0, 0, 255}, color.RGBA{0, 0, 255, 255}, color.RGBA{0, 153, 0, 255})
-
-	//生存随即的验证码图片
+	//生成图片 返回图片和 字符串(图片内容的文本形式)
 	img, str := cap.Create(4, captcha.NUM)
+	beego.Info(str)
 
-	/*将uuid和随即验证码进行缓存*/
-	//配置缓存参数
-	redis_conf := map[string]string{
-		"key": utils.G_server_name,
-		//127.0.0.1:6379
-		"conn":  utils.G_redis_addr + ":" + utils.G_redis_port,
-		"dbNum": utils.G_redis_dbnum,
+	b := *img      //解引用
+	c := *(b.RGBA) //解引用
+	//成功返回
+	rsp.Errno = utils.RECODE_OK
+	rsp.Errmsg = utils.RecodeText(rsp.Errno)
+
+	//图片信息
+	rsp.Pix = []byte(c.Pix)
+	rsp.Stride = int64(c.Stride)
+	rsp.Max = &example.Response_Point{X: int64(c.Rect.Max.X), Y: int64(c.Rect.Max.Y)}
+	rsp.Min = &example.Response_Point{X: int64(c.Rect.Min.X), Y: int64(c.Rect.Min.Y)}
+
+	/*将uuid与 随机数验证码对应的存储在redis缓存中*/
+	//初始化缓存全局变量的对象
+
+	redis_config_map := map[string]string{
+		"key": "ihome",
+
+		"conn":     utils.G_redis_addr + ":" + utils.G_redis_port,
+		"dbNum":    utils.G_redis_dbnum,
+		"password": "sher",
 	}
-	beego.Info(redis_conf)
+	beego.Info(redis_config_map)
+	redis_config, _ := json.Marshal(redis_config_map)
 
-	//将map进行转化成为json
-	redis_conf_js, _ := json.Marshal(redis_conf)
-
-	//创建redis句柄
-	bm, err := cache.NewCache("redis", string(redis_conf_js))
+	//连接redis数据库 创建句柄
+	bm, err := cache.NewCache("redis", string(redis_config))
 	if err != nil {
-		beego.Info("redis连接失败", err)
-		rsp.Error = utils.RECODE_DBERR
-		rsp.Errmsg = utils.RecodeText(rsp.Error)
+		beego.Info("GetImage()   cache.NewCache err ", err)
+		rsp.Errno = utils.RECODE_DBERR
+		rsp.Errmsg = utils.RecodeText(rsp.Errno)
 	}
-	//验证码与uuid进行缓存
-	bm.Put(req.Uuid, str, time.Second*300)
-
-	//图片解引用
-	img1 := *img
-	img2 := *img1.RGBA
-	//返回错误信息
-	rsp.Error = utils.RECODE_OK
-	rsp.Errmsg = utils.RecodeText(rsp.Error)
-	//返回图片拆分
-	rsp.Pix = []byte(img2.Pix)
-	rsp.Stride = int64(img2.Stride)
-
-	rsp.Max = &example.Response_Point{X: int64(img2.Rect.Max.X), Y: int64(img2.Rect.Max.Y)}
-	rsp.Min = &example.Response_Point{X: int64(img2.Rect.Min.X), Y: int64(img2.Rect.Min.Y)}
+	//验证码进行1个小时缓存
+	bm.Put(req.Uuid, str, 300*time.Second)
 
 	return nil
 }

@@ -3,81 +3,110 @@ package handler
 import (
 	"context"
 
+	"github.com/micro/go-log"
+
 	"encoding/json"
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/cache"
 	_ "github.com/astaxie/beego/cache/redis"
 	"github.com/astaxie/beego/orm"
-	"github.com/garyburd/redigo/redis"
-	_ "github.com/garyburd/redigo/redis"
 	_ "github.com/gomodule/redigo/redis"
-	example "gomicro/GetUserHouses/proto/example"
-	"gomicro/IhomeWeb/models"
-	"gomicro/IhomeWeb/utils"
-	"strconv"
+	example "go-1/GetUserHouses/proto/example"
+	"go-1/homeweb/models"
+	"go-1/homeweb/utils"
+	"reflect"
 )
 
 type Example struct{}
 
 // Call is a single request handler called via client.Call or the generated client code
 func (e *Example) GetUserHouses(ctx context.Context, req *example.Request, rsp *example.Response) error {
-	beego.Info("获取用户已发部房源 GetUserHouses api/v1.0/user/houses")
-
-	/*初始化 返回值*/
+	//打印被调用的函数
+	beego.Info("获取当前用户所发布的房源 GetUserHouses /api/v1.0/user/houses")
+	//创建返回空间
 	rsp.Errno = utils.RECODE_OK
 	rsp.Errmsg = utils.RecodeText(rsp.Errno)
 
-	/*获取sessionid*/
-	sessionid := req.Sessionid
-	/*连接redis*/
-	//配置缓存参数
-	redis_conf := map[string]string{
-		"key": utils.G_server_name,
-		//127.0.0.1:6379
-		"conn":  utils.G_redis_addr + ":" + utils.G_redis_port,
-		"dbNum": utils.G_redis_dbnum,
+	/*通过session 获取我们当前登陆用户的user_id*/
+	//构建连接缓存的数据
+	redis_config_map := map[string]string{
+		"key":      utils.G_server_name,
+		"conn":     utils.G_redis_addr + ":" + utils.G_redis_port,
+		"dbNum":    utils.G_redis_dbnum,
+		"password": "sher",
 	}
-	beego.Info(redis_conf)
+	beego.Info(redis_config_map)
+	redis_config, _ := json.Marshal(redis_config_map)
 
-	//将map进行转化成为json
-	redis_conf_js, _ := json.Marshal(redis_conf)
-
-	//创建redis句柄
-	bm, err := cache.NewCache("redis", string(redis_conf_js))
+	//连接redis数据库 创建句柄
+	bm, err := cache.NewCache("redis", string(redis_config))
 	if err != nil {
-		beego.Info("redis连接失败", err)
+		beego.Info("缓存创建失败", err)
 		rsp.Errno = utils.RECODE_DBERR
 		rsp.Errmsg = utils.RecodeText(rsp.Errno)
 		return nil
 	}
+	//拼接key
+	sessioniduserid := req.Sessionid + "user_id"
 
-	/*拼接key*/
-	sessionid_user_id := sessionid + "user_id"
-	/*查询对应的user_id*/
-	user_id := bm.Get(sessionid_user_id)
-	//转换格式
-	user_id_str, _ := redis.String(user_id, nil)
-	id, _ := strconv.Atoi(user_id_str)
+	value_id := bm.Get(sessioniduserid)
+	beego.Info(value_id, reflect.TypeOf(value_id))
+	id := int(value_id.([]uint8)[0])
+	beego.Info(id, reflect.TypeOf(id))
 
-	/*查询数据库*/
-	//创建orm句柄
+	/*通过user_id 获取到当前的用户所发布的房源信息*/
+	house_list := []models.House{}
+
+	//创建数据库句柄
 	o := orm.NewOrm()
 	qs := o.QueryTable("house")
 
-	houses_list := []models.House{}
-	/*获得当前用户房屋信息*/
-	_, err = qs.Filter("user_id", id).All(&houses_list)
+	num, err := qs.Filter("user__id", id).All(&house_list)
 	if err != nil {
-		beego.Info("查询房屋数据失败", err)
+
 		rsp.Errno = utils.RECODE_DBERR
 		rsp.Errmsg = utils.RecodeText(rsp.Errno)
-		return nil
+	}
+	if num == 0 {
+		rsp.Errno = utils.RECODE_NODATA
+		rsp.Errmsg = utils.RecodeText(rsp.Errno)
 	}
 
-	/*json编码成为二进制返回*/
-	house, _ := json.Marshal(houses_list)
-	//返回二进制数据
+	/*成功返回数据给前端*/
+
+	house, err := json.Marshal(house_list)
+
 	rsp.Mix = house
 
 	return nil
+}
+
+// Stream is a server side stream handler called via client.Stream or the generated client code
+func (e *Example) Stream(ctx context.Context, req *example.StreamingRequest, stream example.Example_StreamStream) error {
+	log.Logf("Received Example.Stream request with count: %d", req.Count)
+
+	for i := 0; i < int(req.Count); i++ {
+		log.Logf("Responding: %d", i)
+		if err := stream.Send(&example.StreamingResponse{
+			Count: int64(i),
+		}); err != nil {
+			return err
+		}
+	}
+
+	return nil
+}
+
+// PingPong is a bidirectional stream handler called via client.Stream or the generated client code
+func (e *Example) PingPong(ctx context.Context, stream example.Example_PingPongStream) error {
+	for {
+		req, err := stream.Recv()
+		if err != nil {
+			return err
+		}
+		log.Logf("Got ping %v", req.Stroke)
+		if err := stream.Send(&example.Pong{Stroke: req.Stroke}); err != nil {
+			return err
+		}
+	}
 }

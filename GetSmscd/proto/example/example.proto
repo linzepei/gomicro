@@ -11,19 +11,16 @@ service Example {
 message Message {
 	string say = 1;
 }
-
+//客户端发送给服务器
 message Request {
-    //手机号
-    string mobile =1 ;
-    //图片验证码的值
-    string imagestr =2 ;
-    //uuid
-    string uuid =3 ;
+    string Mobile = 1;
+    string Id = 2;
+    string Text = 3;
 }
-
+//服务器回发给客户端
 message Response {
-	string Error = 1;
-	string Errmsg = 2;
+    string Errno = 1;
+    string Errmsg = 2;
 }
 
 message StreamingRequest {

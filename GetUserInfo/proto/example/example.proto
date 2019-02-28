@@ -3,7 +3,11 @@ syntax = "proto3";
 package go.micro.srv.GetUserInfo;
 
 service Example {
-	rpc GetUserInfo(Request) returns (Response) {}
+    rpc GetUserInfo (Request) returns (Response) {}
+    rpc Stream (StreamingRequest) returns (stream StreamingResponse) {
+    }
+    rpc PingPong (stream Ping) returns (stream Pong) {
+    }
 }
 
 message Message {
@@ -11,33 +15,25 @@ message Message {
 }
 
 message Request {
-	string Sessionid= 1;
+    string Sessionid = 1;
 }
 
 message Response {
-
-	//"errno": "0",
-	string Errno = 1;
-
-    //"errmsg": "成功",
+    //错误码
+    string Errno = 1;
+    //错误信息
     string Errmsg = 2;
-
-    //"user_id": 1,
-    string User_id = 3;
-
-    //"name": "Panda",
+    //用户id
+    int64 User_id = 3;
+    //用户名
     string Name = 4;
-
-    //"mobile": "110",
+    //手机号
     string Mobile = 5;
-
-    //"real_name": "熊猫",
+    //真实姓名
     string Real_name = 6;
-
-    //"id_card": "210112244556677",
+    //身份证号
     string Id_card = 7;
-
-    //"avatar_url":"http://101.200.170.171:9998/group1/M00/00/00/Zciqq1n7It2ANn1dAADexS5wJKs808.png"
+    //头衔地址
     string Avatar_url = 8;
 }
 

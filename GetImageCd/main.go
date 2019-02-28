@@ -1,13 +1,13 @@
 package main
 
 import (
-	"github.com/micro/go-grpc"
 	"github.com/micro/go-log"
 	"github.com/micro/go-micro"
-	"gomicro/GetImageCd/handler"
-	"gomicro/GetImageCd/subscriber"
+	"go-1/GetImageCd/handler"
+	"go-1/GetImageCd/subscriber"
 
-	example "gomicro/GetImageCd/proto/example"
+	"github.com/micro/go-grpc"
+	example "go-1/GetImageCd/proto/example"
 )
 
 func main() {

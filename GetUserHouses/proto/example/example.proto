@@ -5,6 +5,10 @@ package go.micro.srv.GetUserHouses;
 service Example {
     rpc GetUserHouses (Request) returns (Response) {
     }
+    rpc Stream (StreamingRequest) returns (stream StreamingResponse) {
+    }
+    rpc PingPong (stream Ping) returns (stream Pong) {
+    }
 }
 
 message Message {
@@ -18,7 +22,6 @@ message Request {
 message Response {
     string Errno = 1;
     string Errmsg = 2;
-    //查询到的完整数据的二进制流
     bytes Mix = 3;
 }
 

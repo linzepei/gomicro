@@ -5,7 +5,7 @@ This is the GetSession service
 Generated with
 
 ```
-micro new sss/GetSession --namespace=go.micro --type=srv
+micro new go-1/GetSession --namespace=go.micro --type=srv
 ```
 
 ## Getting Started

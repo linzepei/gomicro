@@ -9,58 +9,68 @@ import (
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/cache"
 	_ "github.com/astaxie/beego/cache/redis"
-	_ "github.com/garyburd/redigo/redis"
-	_ "github.com/gomodule/redigo/redis"
-	example "gomicro/GetSession/proto/example"
-	"gomicro/IhomeWeb/utils"
-
 	"github.com/garyburd/redigo/redis"
+	_ "github.com/gomodule/redigo/redis"
+	example "go-1/GetSession/proto/example"
+	"go-1/homeweb/utils"
+	"reflect"
 )
 
 type Example struct{}
 
 // Call is a single request handler called via client.Call or the generated client code
 func (e *Example) GetSession(ctx context.Context, req *example.Request, rsp *example.Response) error {
-	beego.Info("获取session信息 GetSession /api/v1.0/session")
-	//初始化返回值
-	rsp.Errno = utils.RECODE_OK
+	beego.Info(" GET session    /api/v1.0/session !!!")
+	//创建返回空间
+	//初始化的是否返回不存在
+	rsp.Errno = utils.RECODE_SESSIONERR
 	rsp.Errmsg = utils.RecodeText(rsp.Errno)
 
-	/*获取usernamer*/
-
-	//配置缓存参数
-	redis_conf := map[string]string{
-		"key": utils.G_server_name,
-		//127.0.0.1:6379
-		"conn":  utils.G_redis_addr + ":" + utils.G_redis_port,
-		"dbNum": utils.G_redis_dbnum,
+	////获取前端的cookie
+	beego.Info(req.Sessionid, reflect.TypeOf(req.Sessionid))
+	//构建连接缓存的数据
+	redis_config_map := map[string]string{
+		"key":      utils.G_server_name,
+		"conn":     utils.G_redis_addr + ":" + utils.G_redis_port,
+		"dbNum":    utils.G_redis_dbnum,
+		"password": "sher",
 	}
-	beego.Info(redis_conf)
+	beego.Info(redis_config_map)
+	redis_config, _ := json.Marshal(redis_config_map)
+	beego.Info(string(redis_config))
 
-	//将map进行转化成为json
-	redis_conf_js, _ := json.Marshal(redis_conf)
-
-	//创建redis句柄
-	bm, err := cache.NewCache("redis", string(redis_conf_js))
+	//连接redis数据库 创建句柄
+	bm, err := cache.NewCache("redis", string(redis_config))
 	if err != nil {
-		beego.Info("redis连接失败", err)
+		beego.Info("缓存创建失败", err)
 		rsp.Errno = utils.RECODE_DBERR
 		rsp.Errmsg = utils.RecodeText(rsp.Errno)
+		return nil
 	}
 
-	username := bm.Get(req.Sessionid + "name")
+	//拼接key
+	sessionidname := req.Sessionid + "name"
+	//从缓存中获取session 那么使用唯一识别码  通过key查询用户名
+	areas_info_value := bm.Get(sessionidname)
+	//查看返回数据类型
+	beego.Info(reflect.TypeOf(areas_info_value), areas_info_value)
 
-	/*没有返回失败*/
-	if username == nil {
-		beego.Info("获取数据并不存在", err)
-		rsp.Errno = utils.RECODE_DBERR
+	//通过redis方法进行转换
+	name, err := redis.String(areas_info_value, nil)
+	if err != nil {
+		rsp.Errno = utils.RECODE_DATAERR
 		rsp.Errmsg = utils.RecodeText(rsp.Errno)
 	}
+	//查看返回数据类型
+	beego.Info(name, reflect.TypeOf(name))
 
-	/*有就返回成功*/
-	rsp.UserName, _ = redis.String(username, nil)
+	//获取到了session
+	rsp.Errno = utils.RECODE_OK
+	rsp.Errmsg = utils.RecodeText(rsp.Errno)
+	rsp.Data = name
 
 	return nil
+
 }
 
 // Stream is a server side stream handler called via client.Stream or the generated client code

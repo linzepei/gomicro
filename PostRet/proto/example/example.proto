@@ -22,10 +22,9 @@ message Request {
 }
 
 message Response {
-	string Errno = 1;
-	string Errmsg = 2;
-	//将sessionid返回
-	string SessionId= 3;
+    string Errno = 1;
+    string Errmsg = 2;
+    string SessionID = 3;
 }
 
 message StreamingRequest {

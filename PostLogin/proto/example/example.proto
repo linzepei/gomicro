@@ -13,14 +13,14 @@ message Message {
 }
 
 message Request {
-	string Mobile = 1;
-	string Password = 2;
+    string Mobile = 1;
+    string Password = 2;
 }
 
 message Response {
-	string Errno = 1;
-	string Errmsg = 2;
-	string Sessionid = 3;
+    string Errno = 1;
+    string Errmsg = 2;
+    string SessionID = 3;
 }
 
 message StreamingRequest {

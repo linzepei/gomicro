@@ -5,7 +5,7 @@ This is the GetUserHouses service
 Generated with
 
 ```
-micro new sss/GetUserHouses --namespace=go.micro --type=srv
+micro new go-1/GetUserHouses --namespace=go.micro --type=srv
 ```
 
 ## Getting Started

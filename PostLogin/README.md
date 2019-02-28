@@ -5,7 +5,7 @@ This is the PostLogin service
 Generated with
 
 ```
-micro new sss/PostLogin --namespace=go.micro --type=srv
+micro new go-1/PostLogin --namespace=go.micro --type=srv
 ```
 
 ## Getting Started

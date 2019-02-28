@@ -5,7 +5,7 @@ This is the GetUserInfo service
 Generated with
 
 ```
-micro new sss/GetUserInfo --namespace=go.micro --type=srv
+micro new go-1/GetUserInfo --namespace=go.micro --type=srv
 ```
 
 ## Getting Started

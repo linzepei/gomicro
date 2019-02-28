@@ -1,13 +1,13 @@
 package main
 
 import (
-	"github.com/micro/go-grpc"
 	"github.com/micro/go-log"
 	"github.com/micro/go-micro"
-	"gomicro/GetArea/handler"
-	"gomicro/GetArea/subscriber"
+	"go-1/GetArea/handler"
+	"go-1/GetArea/subscriber"
 
-	example "gomicro/GetArea/proto/example"
+	"github.com/micro/go-grpc"
+	example "go-1/GetArea/proto/example"
 )
 
 func main() {

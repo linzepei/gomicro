@@ -3,15 +3,16 @@ package main
 import (
 	"github.com/micro/go-log"
 	"github.com/micro/go-micro"
-	"gomicro/PostRet/handler"
-	"gomicro/PostRet/subscriber"
+	"go-1/PostRet/handler"
+	"go-1/PostRet/subscriber"
 
-	example "gomicro/PostRet/proto/example"
+	"github.com/micro/go-grpc"
+	example "go-1/PostRet/proto/example"
 )
 
 func main() {
 	// New Service
-	service := micro.NewService(
+	service := grpc.NewService(
 		micro.Name("go.micro.srv.PostRet"),
 		micro.Version("latest"),
 	)

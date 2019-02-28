@@ -5,7 +5,7 @@ This is the PostUserAuth service
 Generated with
 
 ```
-micro new sss/PostUserAuth --namespace=go.micro --type=srv
+micro new go-1/PostUserAuth --namespace=go.micro --type=srv
 ```
 
 ## Getting Started

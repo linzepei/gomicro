@@ -3,7 +3,11 @@ syntax = "proto3";
 package go.micro.srv.DeleteSession;
 
 service Example {
-	rpc DeleteSession(Request) returns (Response) {}
+    rpc DeleteSession (Request) returns (Response) {}
+    rpc Stream (StreamingRequest) returns (stream StreamingResponse) {
+    }
+    rpc PingPong (stream Ping) returns (stream Pong) {
+    }
 }
 
 message Message {
@@ -11,12 +15,12 @@ message Message {
 }
 
 message Request {
-	string Sessionid = 1;
+    string Sessionid = 1;
 }
 
 message Response {
-	string Errno = 1;
-	string Errmsg = 2;
+    string Errno = 1;
+    string Errmsg = 2;
 }
 
 message StreamingRequest {

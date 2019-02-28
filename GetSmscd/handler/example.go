@@ -11,11 +11,10 @@ import (
 	_ "github.com/astaxie/beego/cache/redis"
 	"github.com/astaxie/beego/orm"
 	"github.com/garyburd/redigo/redis"
-	_ "github.com/garyburd/redigo/redis"
 	_ "github.com/gomodule/redigo/redis"
-	example "gomicro/GetSmscd/proto/example"
-	"gomicro/IhomeWeb/models"
-	"gomicro/IhomeWeb/utils"
+	example "go-1/GetSmscd/proto/example"
+	"go-1/homeweb/models"
+	"go-1/homeweb/utils"
 	"math/rand"
 	"reflect"
 	"time"
@@ -24,104 +23,103 @@ import (
 type Example struct{}
 
 // Call is a single request handler called via client.Call or the generated client code
+//获取短信验证码
 func (e *Example) GetSmscd(ctx context.Context, req *example.Request, rsp *example.Response) error {
-	beego.Info("获取短信验证码 GetSmscd api/v1.0/smscode/:mobile ")
+	beego.Info(" GET smscd  api/v1.0/smscode/:id ")
+	//初始化返回正确的返回值
+	rsp.Errno = utils.RECODE_OK
+	rsp.Errmsg = utils.RecodeText(rsp.Errno)
+	/*验证uuid的缓存*/
 
-	//初始化返回值
-	rsp.Error = utils.RECODE_OK
-	rsp.Errmsg = utils.RecodeText(rsp.Error)
-
-	/*验证手机号是否存在*/
-	//创建数据库orm句柄
+	//验证手机号
 	o := orm.NewOrm()
-	//使用手机号作为查询条件
 	user := models.User{Mobile: req.Mobile}
-
 	err := o.Read(&user)
-	//如果不报错就说明查找到了
-	//查找到就说明手机号存在
 	if err == nil {
-
-		beego.Info("用户以存在")
-		rsp.Error = utils.RECODE_MOBILEERR
-		rsp.Errmsg = utils.RecodeText(rsp.Error)
+		beego.Info("用户已经存在")
+		rsp.Errno = utils.RECODE_DBERR
+		rsp.Errmsg = utils.RecodeText(rsp.Errno)
 		return nil
 	}
+	beego.Info(err)
 
-	/*验证图片验证码是否正确*/
-	//连接redis
-	//配置缓存参数
-	redis_conf := map[string]string{
-		"key": utils.G_server_name,
-		//127.0.0.1:6379
-		"conn":  utils.G_redis_addr + ":" + utils.G_redis_port,
-		"dbNum": utils.G_redis_dbnum,
+	//连接redis数据库
+	redis_config_map := map[string]string{
+		"key":      utils.G_server_name,
+		"conn":     utils.G_redis_addr + ":" + utils.G_redis_port,
+		"dbNum":    utils.G_redis_dbnum,
+		"password": "sher",
 	}
-	beego.Info(redis_conf)
+	beego.Info(redis_config_map)
+	redis_config, _ := json.Marshal(redis_config_map)
+	beego.Info(string(redis_config))
 
-	//将map进行转化成为json
-	redis_conf_js, _ := json.Marshal(redis_conf)
-
-	//创建redis句柄
-	bm, err := cache.NewCache("redis", string(redis_conf_js))
+	//连接redis数据库 创建句柄
+	bm, err := cache.NewCache("redis", string(redis_config))
+	//bm,err:=cache.NewCache("redis",`{"key":"ihome","conn":"127.0.0.1:6379","dbNum":"0"} `)//创建1个缓存句柄
 	if err != nil {
-		beego.Info("redis连接失败", err)
-		rsp.Error = utils.RECODE_DBERR
-		rsp.Errmsg = utils.RecodeText(rsp.Error)
+		beego.Info("缓存创建失败", err)
+		rsp.Errno = utils.RECODE_DBERR
+		rsp.Errmsg = utils.RecodeText(rsp.Errno)
 		return nil
 	}
-	//通过uuid查找图片验证码的值进行对比
-	value := bm.Get(req.Uuid)
+
+	beego.Info(req.Id, reflect.TypeOf(req.Id))
+	//查询相关数据
+
+	value := bm.Get(req.Id)
 	if value == nil {
-		beego.Info("redis获取失败", err)
-		rsp.Error = utils.RECODE_DBERR
-		rsp.Errmsg = utils.RecodeText(rsp.Error)
+		beego.Info("获取到缓存数据查询失败", value)
+
+		rsp.Errno = utils.RECODE_DBERR
+		rsp.Errmsg = utils.RecodeText(rsp.Errno)
+
 		return nil
 	}
-	//reflect.TypeOf(value)会返回当前数据的变量类型
-	beego.Info(reflect.TypeOf(value), value)
-	//格式转换
+	beego.Info(value, reflect.TypeOf(value))
 	value_str, _ := redis.String(value, nil)
 
-	if value_str != req.Imagestr {
-		beego.Info("数据不匹配 图片验证码值错误")
-		rsp.Error = utils.RECODE_DATAERR
-		rsp.Errmsg = utils.RecodeText(rsp.Error)
+	beego.Info(value_str, reflect.TypeOf(value_str))
+	//数据对比
+	if req.Text != value_str {
+		beego.Info("图片验证码 错误 ")
+		rsp.Errno = utils.RECODE_DBERR
+		rsp.Errmsg = utils.RecodeText(rsp.Errno)
 		return nil
 	}
 
-	/*调用 短信接口发送短信*/
-	//创建随机数
 	r := rand.New(rand.NewSource(time.Now().UnixNano()))
-	size := r.Intn(9999) + 1001
-	beego.Info("验证码", size)
-	////发送短信的配置信息
-	//messageconfig := make(map[string]string)
-	////预先创建好的appid
-	//messageconfig["appid"] = "29672"
-	////预先获得的app的ket
-	//messageconfig["appkey"] = "89d90165cbea8cae80137d7584179bdb"
-	////加密方式默认
-	//messageconfig["signtype"] = "md5"
-	//
-	////messagexsend
-	////创建短信发送的句柄
-	//messagexsend := submail.CreateMessageXSend()
-	////短信发送的手机号
-	//submail.MessageXSendAddTo(messagexsend, req.Mobile)
-	////短信发送的模板
-	//submail.MessageXSendSetProject(messagexsend, "NQ1J94")
-	////验证码
-	//submail.MessageXSendAddVar(messagexsend, "code", strconv.Itoa(size))
-	////发送短信的请求
-	//fmt.Println("MessageXSend ", submail.MessageXSendRun(submail.MessageXSendBuildRequest(messagexsend), messageconfig))
+	size := r.Intn(8999) + 1000 //1000-9999
+	beego.Info(size)
 
-	/*将短信验证码存入缓存数据库*/
+	/*	//短信map
+		messageconfig := make(map[string]string)
+		//id
+		messageconfig["appid"] = "29672"
+		//key
+		messageconfig["appkey"] = "89d90165cbea8cae80137d7584179bdb"
+		//编码格式
+		messageconfig["signtype"] = "md5"
+
+
+		//短信操作对象
+		messagexsend := submail.CreateMessageXSend()
+		//短信发送到那个手机号
+		submail.MessageXSendAddTo(messagexsend, req.Mobile  )
+		//短信发送的模板
+		submail.MessageXSendSetProject(messagexsend, "NQ1J94")
+		//发送的验证码
+		submail.MessageXSendAddVar(messagexsend, "code", strconv.Itoa(size))
+		//发送
+		fmt.Println("MessageXSend ", submail.MessageXSendRun(submail.MessageXSendBuildRequest(messagexsend), messageconfig))*/
+
+	/*通过手机号将验证短信进行缓存*/
+
 	err = bm.Put(req.Mobile, size, time.Second*300)
 	if err != nil {
-		beego.Info("redis创建失败", err)
-		rsp.Error = utils.RECODE_DBERR
-		rsp.Errmsg = utils.RecodeText(rsp.Error)
+		beego.Info("缓存出现问题")
+		rsp.Errno = utils.RECODE_DBERR
+		rsp.Errmsg = utils.RecodeText(rsp.Errno)
 		return nil
 	}
 

@@ -5,6 +5,10 @@ package go.micro.srv.PostHouses;
 service Example {
     rpc PostHouses (Request) returns (Response) {
     }
+    rpc Stream (StreamingRequest) returns (stream StreamingResponse) {
+    }
+    rpc PingPong (stream Ping) returns (stream Pong) {
+    }
 }
 
 message Message {
@@ -13,13 +17,13 @@ message Message {
 
 message Request {
     string Sessionid = 1;
-    bytes Body = 2;
+    bytes Max = 2;
 }
 
 message Response {
     string Errno = 1;
     string Errmsg = 2;
-    string Houses_id = 3;
+    int64 House_Id = 3;
 }
 
 message StreamingRequest {

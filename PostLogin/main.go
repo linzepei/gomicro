@@ -3,11 +3,11 @@ package main
 import (
 	"github.com/micro/go-log"
 	"github.com/micro/go-micro"
-	"sss/PostLogin/handler"
-	"sss/PostLogin/subscriber"
+	"go-1/PostLogin/handler"
+	"go-1/PostLogin/subscriber"
 
 	"github.com/micro/go-grpc"
-	example "sss/PostLogin/proto/example"
+	example "go-1/PostLogin/proto/example"
 )
 
 func main() {

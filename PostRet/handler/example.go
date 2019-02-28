@@ -12,100 +12,104 @@ import (
 	"github.com/astaxie/beego/cache"
 	_ "github.com/astaxie/beego/cache/redis"
 	"github.com/astaxie/beego/orm"
-	"github.com/garyburd/redigo/redis"
-	_ "github.com/garyburd/redigo/redis"
 	_ "github.com/gomodule/redigo/redis"
-	"gomicro/IhomeWeb/models"
-	"gomicro/IhomeWeb/utils"
-	example "gomicro/PostRet/proto/example"
+	example "go-1/PostRet/proto/example"
+	"go-1/homeweb/models"
+	"go-1/homeweb/utils"
+	"reflect"
+	"strconv"
 	"time"
 )
 
 type Example struct{}
 
-//加密函数
-func Md5String(s string) string {
-	//创建1个md5对象
+func GetMd5String(s string) string {
 	h := md5.New()
 	h.Write([]byte(s))
-
 	return hex.EncodeToString(h.Sum(nil))
 }
 
 // Call is a single request handler called via client.Call or the generated client code
 func (e *Example) PostRet(ctx context.Context, req *example.Request, rsp *example.Response) error {
-	beego.Info("PostRet  注册 /api/v1.0/users")
-
+	beego.Info(" POST userreg    /api/v1.0/users !!!")
+	//初始化错误码
 	rsp.Errno = utils.RECODE_OK
 	rsp.Errmsg = utils.RecodeText(rsp.Errno)
 
-	/*验证短信验证码*/
-
-	//redis操作
-	//配置缓存参数
-	redis_conf := map[string]string{
-		"key": utils.G_server_name,
-		//127.0.0.1:6379
-		"conn":  utils.G_redis_addr + ":" + utils.G_redis_port,
-		"dbNum": utils.G_redis_dbnum,
+	//构建连接缓存的数据
+	redis_config_map := map[string]string{
+		"key":      utils.G_server_name,
+		"conn":     utils.G_redis_addr + ":" + utils.G_redis_port,
+		"dbNum":    utils.G_redis_dbnum,
+		"password": "sher",
 	}
-	beego.Info(redis_conf)
+	redis_config, _ := json.Marshal(redis_config_map)
 
-	//将map进行转化成为json
-	redis_conf_js, _ := json.Marshal(redis_conf)
-
-	//创建redis句柄
-	bm, err := cache.NewCache("redis", string(redis_conf_js))
+	//连接redis数据库 创建句柄
+	bm, err := cache.NewCache("redis", string(redis_config))
 	if err != nil {
-		beego.Info("redis连接失败", err)
+		beego.Info("缓存创建失败", err)
 		rsp.Errno = utils.RECODE_DBERR
 		rsp.Errmsg = utils.RecodeText(rsp.Errno)
-		return nil
-	}
-	//通过手机号获取到短信验证码
-	sms_code := bm.Get(req.Mobile)
-	if sms_code == nil {
-		beego.Info("获取数据失败")
-		rsp.Errno = utils.RECODE_DBERR
-		rsp.Errmsg = utils.RecodeText(rsp.Errno)
+
 		return nil
 	}
 
-	//短信验证码对比
-	sms_code_str, _ := redis.String(sms_code, nil)
+	//查询相关数据
+	value := bm.Get(req.Mobile)
+	if value == nil {
+		beego.Info("获取到缓存数据查询失败", value)
+		rsp.Errno = utils.RECODE_DBERR
+		rsp.Errmsg = utils.RecodeText(rsp.Errno)
 
-	if sms_code_str != req.SmsCode {
+		return nil
+	}
+	beego.Info(value, reflect.TypeOf(value))
+	//进行解码
+	var info interface{}
+	json.Unmarshal(value.([]byte), &info)
+	beego.Info(info, reflect.TypeOf(info))
+
+	//类型转换
+	s := int(info.(float64))
+	beego.Info(s, reflect.TypeOf(s))
+	s1, err := strconv.Atoi(req.SmsCode)
+
+	if s1 != s {
 		beego.Info("短信验证码错误")
-		rsp.Errno = utils.RECODE_SMSERR
+		rsp.Errno = utils.RECODE_DBERR
 		rsp.Errmsg = utils.RecodeText(rsp.Errno)
 		return nil
 	}
 
-	/*将数据存入数据库*/
+	user := models.User{}
+	user.Name = req.Mobile //就用手机号登陆
+	//密码正常情况下 md5 sha256 sm9  存入数据库的是你加密后的编码不是明文存入
+	//user.Password_hash = GetMd5String(req.Password)
+	user.Password_hash = req.Password
+	user.Mobile = req.Mobile
+	//创建数据库剧本
 	o := orm.NewOrm()
-	user := models.User{Mobile: req.Mobile, Password_hash: Md5String(req.Password), Name: req.Mobile}
-
+	//插入数据库
 	id, err := o.Insert(&user)
 	if err != nil {
-		beego.Info("注册数据失败")
 		rsp.Errno = utils.RECODE_DBERR
 		rsp.Errmsg = utils.RecodeText(rsp.Errno)
 		return nil
 	}
-	beego.Info("user_id", id)
+	beego.Info("id", id)
 
-	/*创建sessionid  （唯一的随即码）*/
-	sessionid := Md5String(req.Mobile + req.Password)
+	//生成sessionID 保证唯一性
+	h := GetMd5String(req.Mobile + req.Password)
+	//返回给客户端session
+	rsp.SessionID = h
 
-	rsp.SessionId = sessionid
-
-	/*以sessionid为key的一部分创建session*/
-	//name //名字暂时使用手机号
-	bm.Put(sessionid+"name", user.Mobile, time.Second*3600)
-	//user_id
-	bm.Put(sessionid+"user_id", id, time.Second*3600)
-	//手机号
-	bm.Put(sessionid+"mobile", user.Mobile, time.Second*3600)
+	//拼接key sessionid + name
+	bm.Put(h+"name", string(user.Mobile), time.Second*3600)
+	//拼接key sessionid + user_id
+	bm.Put(h+"user_id", string(user.Id), time.Second*3600)
+	//拼接key sessionid + mobile
+	bm.Put(h+"mobile", string(user.Mobile), time.Second*3600)
 
 	return nil
 }
